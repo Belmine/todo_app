@@ -69,7 +69,12 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/icon/icon.png"
+  # Icône adaptative Android (Android 8+) : fond orange + coche générée par create_icon.py
+  adaptive_icon_background: "#FFB800"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  min_sdk_android: 21
 
   # To add assets to your application, add an assets section, like this:
   # assets:
