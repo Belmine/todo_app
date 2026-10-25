@@ -254,7 +254,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Ajoutez ce qu\'il vous faut pour le marché',
+                                'Ajoutez ce qu\'il vous faut pour vos courses.',
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.grey[700],
