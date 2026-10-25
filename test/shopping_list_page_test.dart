@@ -15,7 +15,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('ajoute un article avec son prix et met à jour le total', (tester) async {
+  testWidgets('ajoute un article avec son montant et met à jour le total', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: ShoppingListPage()));
     await tester.pumpAndSettle();
 
@@ -41,6 +41,35 @@ void main() {
     expect(prefs.getString('shopping_items'), contains('Tomates'));
   });
 
+  testWidgets('affiche les montants sans devise ni décimales inutiles', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: ShoppingListPage()));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).at(0), 'Riz');
+    await tester.enterText(find.byType(TextField).at(1), '2500');
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+
+    // fr_FR sépare les milliers par une espace insécable
+    expect(find.textContaining(RegExp(r'^2\s500$')), findsOneWidget);
+    expect(find.textContaining(RegExp(r'^Total 2\s500$')), findsOneWidget);
+    expect(find.textContaining('€'), findsNothing);
+  });
+
+  testWidgets('relit les articles enregistrés avec l\'ancien champ de prix', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'shopping_items':
+          '[{"id":"1","name":"Tomates","estimatedPrice":2.5,"isBought":false,'
+          '"createdAt":"2026-10-25T13:30:00.000"}]',
+    });
+
+    await tester.pumpWidget(const MaterialApp(home: ShoppingListPage()));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tomates'), findsOneWidget);
+    expect(find.textContaining('Total 2,50'), findsOneWidget);
+  });
+
   testWidgets('retire les articles achetés', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: ShoppingListPage()));
     await tester.pumpAndSettle();
@@ -49,11 +78,11 @@ void main() {
     await tester.tap(find.byIcon(Icons.add));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.remove_done), findsNothing);
+    expect(find.byIcon(Icons.delete_sweep_outlined), findsNothing);
     await tester.tap(find.byType(Checkbox));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.remove_done));
+    await tester.tap(find.byIcon(Icons.delete_sweep_outlined));
     await tester.pumpAndSettle();
 
     expect(find.text('Oignons'), findsNothing);

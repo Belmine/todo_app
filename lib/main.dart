@@ -32,6 +32,27 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color(0xFF242424),
           elevation: 0,
         ),
+        // Onglet actif : icône et libellé en orange, sans fond derrière l'icône
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: const Color(0xFF242424),
+          indicatorColor: Colors.transparent,
+          height: 64,
+          iconTheme: WidgetStateProperty.resolveWith(
+            (states) => IconThemeData(
+              color: states.contains(WidgetState.selected)
+                  ? const Color(0xFFFFB800)
+                  : Colors.grey[500],
+            ),
+          ),
+          labelTextStyle: WidgetStateProperty.resolveWith(
+            (states) => TextStyle(
+              fontSize: 12,
+              color: states.contains(WidgetState.selected)
+                  ? const Color(0xFFFFB800)
+                  : Colors.grey[500],
+            ),
+          ),
+        ),
       ),
       themeMode: ThemeMode.dark,
       home: const HomePage(),
@@ -64,9 +85,6 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) => setState(() => _currentIndex = index),
-        backgroundColor: const Color(0xFF242424),
-        indicatorColor: const Color(0xFFFFB800),
-        height: 64,
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.check_box_outlined),

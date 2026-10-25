@@ -1,14 +1,14 @@
 class ShoppingItem {
   final String id;
   final String name;
-  final double estimatedPrice;
+  final double estimatedAmount;
   bool isBought;
   final DateTime createdAt;
 
   ShoppingItem({
     required this.id,
     required this.name,
-    required this.estimatedPrice,
+    required this.estimatedAmount,
     this.isBought = false,
     required this.createdAt,
   });
@@ -18,7 +18,7 @@ class ShoppingItem {
     return {
       'id': id,
       'name': name,
-      'estimatedPrice': estimatedPrice,
+      'estimatedAmount': estimatedAmount,
       'isBought': isBought,
       'createdAt': createdAt.toIso8601String(),
     };
@@ -29,7 +29,9 @@ class ShoppingItem {
     return ShoppingItem(
       id: json['id'] as String,
       name: json['name'] as String,
-      estimatedPrice: (json['estimatedPrice'] as num).toDouble(),
+      // Les articles enregistrés avant le renommage utilisent 'estimatedPrice'
+      estimatedAmount:
+          ((json['estimatedAmount'] ?? json['estimatedPrice']) as num).toDouble(),
       isBought: json['isBought'] as bool,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
