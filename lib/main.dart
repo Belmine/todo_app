@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'models/task.dart';
 import 'services/task_service.dart';
+import 'pages/shopping_list_page.dart';
 
 void main() async {
   await initializeDateFormatting('fr_FR', null);
@@ -33,7 +34,52 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.dark,
-      home: const TodoHomePage(),
+      home: const HomePage(),
+    );
+  }
+}
+
+// Navigation entre la todo du jour et la liste de courses
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // IndexedStack garde l'état des deux pages quand on change d'onglet
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [
+          TodoHomePage(),
+          ShoppingListPage(),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (index) => setState(() => _currentIndex = index),
+        backgroundColor: const Color(0xFF242424),
+        indicatorColor: const Color(0xFFFFB800),
+        height: 64,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.check_box_outlined),
+            selectedIcon: Icon(Icons.check_box),
+            label: 'Tâches',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.shopping_cart_outlined),
+            selectedIcon: Icon(Icons.shopping_cart),
+            label: 'Courses',
+          ),
+        ],
+      ),
     );
   }
 }
